@@ -168,7 +168,10 @@ create table subtasks (
 - [x] Tâches et sous-tâches avec priorités
 - [x] Calendrier hebdomadaire / mensuel
 - [x] Ajout de durées estimées sur les tâches
-- [ ] Planification automatique des tâches dans le calendrier
+- [x] Planification automatique des tâches dans le calendrier
+- [ ] Conversion en monorepo avec un back nest
+- [ ] Ajout d'un loader
+- [ ] Gestion des erreurs 
 
 ---
 
