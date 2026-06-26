@@ -14,7 +14,7 @@ interface Props {
   onAddSubtask: (categoryId: number, taskId: number, text: string, priority?: Priority, duration?: number | null) => void
   onToggleSubtask: (categoryId: number, taskId: number, subtaskId: number) => void
   onRemoveSubtask: (categoryId: number, taskId: number, subtaskId: number) => void
-  onUpdateTask: (categoryId: number, taskId: number, text: string, priority: Priority, duration: number | null) => void
+  onUpdateTask: (taskId: number, text: string, priority: Priority, duration: number | null) => void
   onUpdateSubtask: (categoryId: number, taskId: number, subtaskId: number, text: string, priority: Priority, duration: number | null) => void
 }
 

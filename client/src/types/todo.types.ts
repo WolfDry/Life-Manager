@@ -4,7 +4,7 @@ export type Subtask = {
   id: number
   text: string
   done: boolean
-  task_id: number
+  taskId: number
   priority: Priority
   duration?: number | null
 }
@@ -13,7 +13,7 @@ export type Task = {
   id: number
   text: string
   done: boolean
-  category_id: number
+  categoryId: number
   subtask: Subtask[]
   priority: Priority
   duration?: number | null

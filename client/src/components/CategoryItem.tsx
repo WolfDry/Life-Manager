@@ -15,7 +15,7 @@ interface Props {
   onAddSubtask: (categoryId: number, taskId: number, text: string, priority?: Priority, duration?: number | null) => void
   onToggleSubtask: (categoryId: number, taskId: number, subtaskId: number) => void
   onRemoveSubtask: (categoryId: number, taskId: number, subtaskId: number) => void
-  onUpdateTask: (categoryId: number, taskId: number, text: string, priority: Priority, duration: number | null) => void
+  onUpdateTask: (taskId: number, text: string, priority: Priority, duration: number | null) => void
   onUpdateSubtask: (categoryId: number, taskId: number, subtaskId: number, text: string, priority: Priority, duration: number | null) => void
 }
 
@@ -113,7 +113,7 @@ export function CategoryItem({
             onAddSubtask={(text, priority, duration) => onAddSubtask(category.id, task.id, text, priority, duration)}
             onToggleSubtask={(sid: number) => onToggleSubtask(category.id, task.id, sid)}
             onRemoveSubtask={(sid: number) => onRemoveSubtask(category.id, task.id, sid)}
-            onUpdateTask={(text, priority, duration) => onUpdateTask(category.id, task.id, text, priority, duration)}
+            onUpdateTask={(text, priority, duration) => onUpdateTask(task.id, text, priority, duration)}
             onUpdateSubtask={(sid, text, priority, duration) => onUpdateSubtask(category.id, task.id, sid, text, priority, duration)}
           />
         ))}

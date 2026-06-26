@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import { CategoryList } from './CategoryList'
-import { Category, Priority } from '../types/todo.types'
+import { Category, Priority, Task } from '../types/todo.types'
 import '../styles/TodoPanel.css'
 import { CalendarEvent, CalendarEventDetail } from '../types/calendar.types'
 import { createCategory, deleteCategory, getCategories, patchCategory } from '../api/category'
+import { createTasks, deleteTask, patchTask } from '../api/task'
 
 const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
@@ -273,10 +274,10 @@ export function TodoPanel({ onScheduled }: Props) {
   }, [])
 
   // --- State updater helpers ---
-  const patchTask = (catId: number, taskId: number, patch: object) =>
+  const handleTask = (task: Task) =>
     setCategories(prev => prev.map(c =>
-      c.id === catId
-        ? { ...c, task: c.task.map(t => t.id === taskId ? { ...t, ...patch } : t) }
+      c.id === task.categoryId
+        ? { ...c, task: c.task.map(t => t.id === task.id ? task : t) }
         : c
     ))
 
@@ -312,31 +313,29 @@ export function TodoPanel({ onScheduled }: Props) {
 
   // --- Task ---
   const addTask = async (categoryId: number, text: string, priority: Priority = 'low', duration?: number | null) => {
-    // const { data, error } = await supabase
-    //   .from('task')
-    //   .insert({ text, done: false, category_id: categoryId, priority, duration: duration ?? null })
-    //   .select().single()
-    // if (error) { console.error(error); return }
-    // patchCategory(categoryId, { task: [...(categories.find(c => c.id === categoryId)?.task ?? []), { ...data, subtask: [] }] })
+    const result = await createTasks({ text, categoryId, priority, duration })
+    const category = categories.find(cat => cat.id === categoryId)
+    if (category) {
+      category.task.push(result)
+      setCategories(prev => prev.map(c => c.id === category.id ? category : c))
+    }
   }
 
   const removeTask = async (categoryId: number, taskId: number) => {
-    // const { error } = await supabase.from('task').delete().eq('id', taskId)
-    // if (error) { console.error(error); return }
-    // setCategories(prev => prev.map(c =>
-    //   c.id === categoryId ? { ...c, task: c.task.filter(t => t.id !== taskId) } : c
-    // ))
+    const result = await deleteTask(taskId)
+    setCategories(prev => prev.map(c =>
+      c.id === categoryId ? { ...c, task: c.task.filter(t => t.id !== result.id) } : c
+    ))
   }
 
-  const updateTask = async (categoryId: number, taskId: number, patch: { text?: string; priority?: Priority; duration?: number | null; done?: boolean }) => {
-    // const { error } = await supabase.from('task').update(patch).eq('id', taskId)
-    // if (error) { console.error(error); return }
-    // patchTask(categoryId, taskId, patch)
+  const updateTask = async (taskId: number, patch: { text?: string; priority?: Priority; duration?: number | null; done?: boolean }) => {
+    const result = await patchTask(taskId, patch)
+    handleTask(result)
   }
 
   const toggleTask = (categoryId: number, taskId: number) => {
     const task = categories.find(c => c.id === categoryId)?.task.find(t => t.id === taskId)
-    if (task) updateTask(categoryId, taskId, { done: !task.done })
+    if (task) updateTask(taskId, { done: !task.done })
   }
 
   // --- Subtask ---
@@ -412,7 +411,7 @@ export function TodoPanel({ onScheduled }: Props) {
         onAddSubtask={addSubtask}
         onToggleSubtask={toggleSubtask}
         onRemoveSubtask={removeSubtask}
-        onUpdateTask={(cId, tId, text, priority, duration) => updateTask(cId, tId, { text, priority, duration })}
+        onUpdateTask={(tId, text, priority, duration) => updateTask(tId, { text, priority, duration })}
         onUpdateSubtask={(cId, tId, sId, text, priority, duration) => updateSubtask(cId, tId, sId, { text, priority, duration })}
       />
 
