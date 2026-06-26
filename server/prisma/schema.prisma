@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model category {
+  id    BigInt @id @default(autoincrement())
+  name  String
+  color String @default("#3b82f6")
+  task  task[]
+}
+
+model subtask {
+  id       BigInt  @id @default(autoincrement())
+  text     String
+  done     Boolean @default(false)
+  task_id  BigInt?
+  priority String  @default("medium")
+  duration Int?
+  task     task?   @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model task {
+  id          BigInt    @id @default(autoincrement())
+  text        String
+  done        Boolean   @default(false)
+  category_id BigInt?
+  priority    String    @default("medium")
+  duration    Int?
+  subtask     subtask[]
+  category    category? @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}

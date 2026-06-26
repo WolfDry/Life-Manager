@@ -161,18 +161,18 @@ export function TaskItem({ task, onToggle, onRemove, onAddSubtask, onToggleSubta
               {task.text}
             </span>
             <DurationBadge
-              duration={task.duration ?? (task.subtasks.reduce((sum, s) => sum + (s.duration ?? 0), 0) || null)}
+              duration={task.duration ?? (task.subtask.reduce((sum, s) => sum + (s.duration ?? 0), 0) || null)}
               done={task.done}
-              derived={!task.duration && task.subtasks.some(s => s.duration)}
+              derived={!task.duration && task.subtask.some(s => s.duration)}
             />
           </>
         )}
         <button className="remove-btn" onClick={onRemove}>✕</button>
       </div>
 
-      {task.subtasks.length > 0 && (
+      {task.subtask.length > 0 && (
         <ul className="task-item__subtasks">
-          {task.subtasks.map(sub => (
+          {task.subtask.map(sub => (
             <li key={sub.id} className="subtask-item">
               <input type="checkbox" checked={sub.done} onChange={() => onToggleSubtask(sub.id)} />
               {editingSubtaskId === sub.id ? (

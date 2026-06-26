@@ -104,7 +104,7 @@ export function CategoryItem({
       </div>
 
       <div className="category-item__tasks">
-        {category.tasks.map(task => (
+        {category.task.map(task => (
           <TaskItem
             key={task.id}
             task={task}

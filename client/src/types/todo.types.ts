@@ -14,7 +14,7 @@ export type Task = {
   text: string
   done: boolean
   category_id: number
-  subtasks: Subtask[]
+  subtask: Subtask[]
   priority: Priority
   duration?: number | null
 }
@@ -23,5 +23,5 @@ export type Category = {
   id: number
   name: string
   color: string
-  tasks: Task[]
+  task: Task[]
 }
