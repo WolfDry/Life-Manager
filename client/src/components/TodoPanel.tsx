@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef } from 'react'
 import { CategoryList } from './CategoryList'
-import { Category, Priority, Task } from '../types/todo.types'
+import { Category, Priority, Subtask, Task } from '../types/todo.types'
 import '../styles/TodoPanel.css'
 import { CalendarEvent, CalendarEventDetail } from '../types/calendar.types'
 import { createCategory, deleteCategory, getCategories, patchCategory } from '../api/category'
 import { createTasks, deleteTask, patchTask } from '../api/task'
+import { createSubTasks, deleteSubTask, patchSubTask } from '../api/subtask'
 
 const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
@@ -281,13 +282,13 @@ export function TodoPanel({ onScheduled }: Props) {
         : c
     ))
 
-  const patchSubtask = (catId: number, taskId: number, subtaskId: number, patch: object) =>
+  const handleSubtask = (catId: number, subTask: Subtask) =>
     setCategories(prev => prev.map(c =>
       c.id === catId
         ? {
           ...c, task: c.task.map(t =>
-            t.id === taskId
-              ? { ...t, subtask: t.subtask.map(s => s.id === subtaskId ? { ...s, ...patch } : s) }
+            t.id === subTask.id
+              ? { ...t, subtask: t.subtask.map(s => s.id === subTask.id ? subTask : s) }
               : t
           )
         }
@@ -340,33 +341,30 @@ export function TodoPanel({ onScheduled }: Props) {
 
   // --- Subtask ---
   const addSubtask = async (categoryId: number, taskId: number, text: string, priority: Priority = 'medium', duration?: number | null) => {
-    // const { data, error } = await supabase
-    //   .from('subtask')
-    //   .insert({ text, done: false, task_id: taskId, priority, duration: duration ?? null })
-    //   .select().single()
-    // if (error) { console.error(error); return }
-    // const task = categories.find(c => c.id === categoryId)?.task.find(t => t.id === taskId)
-    // if (task) patchTask(categoryId, taskId, { subtask: [...task.subtask, data] })
+    const result = await createSubTasks({ text, taskId, priority, duration })
+    const task = categories.find(c => c.id === categoryId)?.task.find(t => t.id === taskId)
+    if (task) {
+      task.subtask.push(result)
+      handleTask(task)
+    }
   }
 
   const removeSubtask = async (categoryId: number, taskId: number, subtaskId: number) => {
-    // const { error } = await supabase.from('subtask').delete().eq('id', subtaskId)
-    // if (error) { console.error(error); return }
-    // setCategories(prev => prev.map(c =>
-    //   c.id === categoryId
-    //     ? {
-    //       ...c, task: c.task.map(t =>
-    //         t.id === taskId ? { ...t, subtask: t.subtask.filter(s => s.id !== subtaskId) } : t
-    //       )
-    //     }
-    //     : c
-    // ))
+    const result = await deleteSubTask(subtaskId)
+    setCategories(prev => prev.map(c =>
+      c.id === categoryId
+        ? {
+          ...c, task: c.task.map(t =>
+            t.id === result.taskId ? { ...t, subtask: t.subtask.filter(s => s.id !== result.id) } : t
+          )
+        }
+        : c
+    ))
   }
 
   const updateSubtask = async (categoryId: number, taskId: number, subtaskId: number, patch: { text?: string; priority?: Priority; duration?: number | null; done?: boolean }) => {
-    // const { error } = await supabase.from('subtask').update(patch).eq('id', subtaskId)
-    // if (error) { console.error(error); return }
-    // patchSubtask(categoryId, taskId, subtaskId, patch)
+    const result = await patchSubTask(subtaskId, patch)
+    handleSubtask(categoryId, result)
   }
 
   const toggleSubtask = (categoryId: number, taskId: number, subtaskId: number) => {

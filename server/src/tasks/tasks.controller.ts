@@ -5,16 +5,16 @@ import { UpdateTaskDto } from './dto/updateTaskDto';
 
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly categoriesService: TasksService) { }
+  constructor(private readonly tasksService: TasksService) { }
 
   @Get()
   find() {
-    return this.categoriesService.getTasks()
+    return this.tasksService.getTasks()
   }
 
   @Get(":id")
   findById(@Param('id', ParseIntPipe) id: string) {
-    const data = this.categoriesService.getTaskById(parseInt(id))
+    const data = this.tasksService.getTaskById(parseInt(id))
 
     if (!data)
       throw new HttpException('Aucune tache trouvée', 404)
@@ -29,16 +29,16 @@ export class TasksController {
     if (!categoryId)
       throw new HttpException('Aucune catégorie selectionnée', 404)
 
-    return this.categoriesService.createTask(body)
+    return this.tasksService.createTask(body)
   }
 
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: string, @Body() body: UpdateTaskDto) {
-    return this.categoriesService.upadateTask(+id, body)
+    return this.tasksService.upadateTask(+id, body)
   }
 
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: string) {
-    return this.categoriesService.deleteTask(+id)
+    return this.tasksService.deleteTask(+id)
   }
 }
