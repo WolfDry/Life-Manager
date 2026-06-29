@@ -6,6 +6,7 @@ import { CalendarEvent, CalendarEventDetail } from '../types/calendar.types'
 import { createCategory, deleteCategory, getCategories, patchCategory } from '../api/category'
 import { createTasks, deleteTask, patchTask } from '../api/task'
 import { createSubTasks, deleteSubTask, patchSubTask } from '../api/subtask'
+import { useCalendarStore } from '../store/calendar.store'
 
 const PRIORITY_RANK: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
@@ -260,11 +261,10 @@ function AddCategoryInline({ onAdd }: { onAdd: (name: string) => void }) {
   )
 }
 
-type Props = { onScheduled: (events: CalendarEvent[]) => void }
-
-export function TodoPanel({ onScheduled }: Props) {
+export function TodoPanel() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading] = useState<boolean>(false)
+  const setEvents = useCalendarStore(s => s.setEvents)
 
   useEffect(() => {
     async function loadCategories() {
@@ -382,7 +382,7 @@ export function TodoPanel({ onScheduled }: Props) {
           <h1 className="todo-title">Ma Todo</h1>
           <button
             className={`plan-btn${loading ? ' plan-btn--loading' : ''}`}
-            onClick={() => onScheduled(scheduleTasks(categories))}
+            onClick={() => setEvents(scheduleTasks(categories))}
             disabled={loading}
           >
             {loading ? 'Planification…' : 'Planifier'}

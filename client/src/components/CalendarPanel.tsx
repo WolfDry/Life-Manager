@@ -6,14 +6,15 @@ import interactionPlugin from '@fullcalendar/interaction'
 import { EventClickArg } from '@fullcalendar/core'
 import frLocale from '@fullcalendar/core/locales/fr'
 import '../styles/CalendarPanel.css'
-import { CalendarEvent, CalendarEventDetail } from '../types/calendar.types'
+import { CalendarEventDetail } from '../types/calendar.types'
+import { useCalendarStore } from '../store/calendar.store'
 
 const PRIORITY_LABEL: Record<string, string> = { high: 'Haute', medium: 'Moyenne', low: 'Basse' }
 const PRIORITY_COLOR: Record<string, string> = { high: '#e05252', medium: '#e09a52', low: '#52a0e0' }
 
-type Props = { events: CalendarEvent[]; calendarKey: number }
-
-export function CalendarPanel({ events, calendarKey }: Props) {
+export function CalendarPanel() {
+  const events = useCalendarStore(s => s.events)
+  const calendarKey = useCalendarStore(s => s.calendarKey)
   const [detail, setDetail] = useState<CalendarEventDetail & { eventTitle: string } | null>(null)
 
   function handleEventClick(arg: EventClickArg) {
