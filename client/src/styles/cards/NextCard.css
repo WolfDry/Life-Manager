@@ -1,0 +1,34 @@
+.nextCard__title_container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.nextCard__icon_container {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nextCard__icon_container span {
+  font-family: 'Material Symbols Rounded';
+  font-variation-settings: 'wght' 400;
+  font-size: 21px;
+}
+
+.nextCard__description_title {
+  font-size: 16.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -.01em;
+  margin-bottom: 6px;
+}
+
+.nextCard__description {
+  font-size: 13px;
+  color: #8a8f83;
+}

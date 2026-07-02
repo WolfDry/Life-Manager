@@ -25,9 +25,6 @@ export function CalendarPanel() {
 
   return (
     <div className="calendar-panel">
-      <div className="calendar-header">
-        <h1 className="calendar-title">Mon calendrier</h1>
-      </div>
       <FullCalendar
         key={calendarKey}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
